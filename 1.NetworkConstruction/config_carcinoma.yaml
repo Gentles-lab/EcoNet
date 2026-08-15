@@ -1,0 +1,54 @@
+# ==============================================================================
+# EcoNet Network Construction — pan-cancer example (Carcinoma model, CE1–CE10)
+# ==============================================================================
+# Same pipeline as config_ccRCC.yaml but using the general Carcinoma EcoTyper
+# model (10 ecotypes). Run one config per cancer type; the resulting per-cancer
+# networks are then combined with merge_pancancer.py into a consensus network.
+#
+#   python run_pipeline.py --config config_carcinoma.yaml
+#
+# Paths are resolved relative to this file's directory (or use absolute paths).
+
+# --- Input Data (YOU supply these) ---
+scrna_h5ad: "PATH/TO/your_cancer_scRNA.h5ad"                # <-- EDIT
+nichenet_dir: "PATH/TO/NicheNet_DB"                         # <-- EDIT (see README)
+
+# --- EcoTyper Model: general Carcinoma model (10 ecotypes, CE1–CE10) ---
+ecotyper_dir: "PATH/TO/EcotyperModels/Carcinoma"           # <-- EDIT
+ecotype_abundance: "PATH/TO/ecotype_abundance.txt"         # <-- EDIT
+
+# --- Output (one dir per cancer; merge_pancancer.py reads these) ---
+output_dir: "output_LUAD"                                  # <-- e.g. output_{CANCER}
+
+# --- scRNA-seq Column Names ---
+cell_state_column: "CellType_State"
+sample_column: "Sample"
+
+# --- Pipeline Parameters ---
+overexpr_thresh_p: 100
+lri_variable_both: false
+n_boot: 100
+hill_kh: 0.5
+hill_n: 1
+comm_thresh_prob: 0
+comm_thresh_pval: 0.05
+top_ligands_k: 5
+expression_threshold: 1
+top_mediators_n: 2
+
+# --- Computational ---
+n_jobs: -1
+
+# --- Noisy Gene Filter (per cell-type prefix; set to {} to disable) ---
+noisy_genes:
+  CD8.T.cells: [CD4, CD80, CD40LG]
+  CD4.T.cells: [CD8A, CD8B, CD80]
+  Monocytes.and.Macrophages: [CD4, CD8A, CD8B, IL2RA, CD28]
+  Epithelial.cells: [CD4, CD8A, CD8B, CD81, LCK, IL7R, PTPRC, CD28]
+  Endothelial.cells: [CD4, CD8A, CD8B, PTPRC]
+  Fibroblasts: [PTPRC]
+  B.cells: [CD40LG]
+  Mast.cells: [CD22]
+  Dendritic.cells: [CD4, CD8A, CD8B, CD2, CD226, CD3D, CD3E, CD28, CD40, IL2RG, TGFBR2, CD40LG, CD7]
+  NK.cells: [CD4, CD8A, CD8B, CD3E, CD3G, CD40, HLA-DPA1, CD79B]
+  PCs: [CD4, CD8A, CD8B, CD2, CD244, CD28]

@@ -1,0 +1,29 @@
+# EcoNet conda environment.
+#   conda env create -f environment.yml
+#   conda activate econet
+#
+# torch / torch_geometric wheels are platform- and CUDA-specific. The versions
+# below are CPU-friendly defaults; for GPU, install the matching CUDA builds
+# from https://pytorch.org and https://pytorch-geometric.readthedocs.io .
+name: econet
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - python=3.10
+  - numpy
+  - pandas
+  - scipy
+  - scikit-learn
+  - statsmodels
+  - networkx
+  - joblib
+  - matplotlib
+  - seaborn
+  - pyyaml
+  - scanpy            # Component 1 (scRNA-seq)
+  - anndata
+  - pip
+  - pip:
+      - torch
+      - torch_geometric

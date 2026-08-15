@@ -1,0 +1,73 @@
+# ==============================================================================
+# EcoNet Transfer Learning & Response Prediction — ccRCC
+# ==============================================================================
+# Train a response predictor on immunotherapy data, then (optionally) fine-tune
+# on a cancer-specific cohort. Edit paths, then run:
+#
+#   python run_pipeline.py --config config_ccRCC.yaml
+#
+# Paths are resolved relative to this file's directory (or use absolute paths).
+
+# --- From Components 1-2 ---
+graph_pkl:     "../1.NetworkConstruction/output_ccRCC/global_graph.pkl"   # <-- EDIT
+gat_model_pth: "../2.GATPretrain/output/NN11GraphModel.pth"               # <-- EDIT
+
+# --- TCGA reference (for KNN imputation) ---
+tcga_expression_tsv: "PATH/TO/tcga_reference_tpm.tsv"                     # <-- EDIT
+
+# --- Pre-trained ResponsePredictor (null = train from scratch on the data below) ---
+response_model_pth: null
+
+# --- Pre-training data: pan-cancer immunotherapy cohort ---
+pretrain_expression_tsv: "PATH/TO/pretrain_expression_tpm.tsv"           # <-- EDIT
+pretrain_clinical_tsv:   "PATH/TO/pretrain_clinical.tsv"                 # <-- EDIT
+
+# --- Fine-tuning data (optional; set all to null to skip) ---
+# expression + clinical  -> fine-tune ResponsePredictor only (GAT frozen)
+# + abundance            -> iteratively fine-tune GAT + ResponsePredictor
+finetune_expression_tsv: "PATH/TO/finetune_expression_tpm.tsv"          # <-- EDIT or null
+finetune_clinical_tsv:   "PATH/TO/finetune_clinical.tsv"               # <-- EDIT or null
+finetune_abundance_tsv:  "PATH/TO/finetune_ecotype_abundance.txt"      # <-- EDIT or null
+
+# --- Output ---
+output_dir: "output_ccRCC"
+
+# --- Clinical Data Format ---
+sample_id_column: "ID"
+response_column: "Response"
+response_mapping:
+  R: 1
+  NR: 0
+
+# --- GAT architecture (must match Component 2) ---
+num_ecotypes: 11
+in_channels: 1
+hidden_channels: 8
+gat_heads_1: 4
+gat_heads_2: 1
+fc_dim: 128
+gat_dropout: 0.2
+
+# --- ResponsePredictor architecture ---
+response_hidden_dims: [32, 16]
+response_dropout: 0.1
+
+# --- KNN imputation ---
+knn_neighbors: 16
+
+# --- Pre-training (only used if response_model_pth is null) ---
+pretrain_epochs: 200
+pretrain_lr: 0.005
+pretrain_batch_size: 16
+pretrain_weight_decay: 0.001
+
+# --- Fine-tuning ---
+finetune_epochs: 20
+finetune_lr_ecotyper: 0.0001
+finetune_lr_response: 0.00000001
+finetune_batch_size: 4
+finetune_weight_decay: 0.00000001
+
+# --- Computational ---
+random_seed: 111
+top_k_edges: 5

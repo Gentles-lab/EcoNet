@@ -1,0 +1,73 @@
+# ==============================================================================
+# EcoNet Transfer Learning & Response Prediction — pan-cancer
+# ==============================================================================
+# Train a portable pan-cancer response predictor on the pretrained pan-cancer
+# GAT. Fine-tuning is disabled (the pretrained ResponsePredictor is the
+# deliverable). Edit paths, then run:
+#
+#   python run_pipeline.py --config config_pancancer.yaml
+#
+# Paths are resolved relative to this file's directory (or use absolute paths).
+
+# --- From Components 1-2 (pan-cancer) ---
+graph_pkl:     "../1.NetworkConstruction/output_PanCancer/pan_cancer_network.pkl"  # <-- EDIT
+gat_model_pth: "../2.GATPretrain/output/NN11GraphModel.pth"                        # <-- EDIT
+
+# --- TCGA reference (must match the GAT's training matrix so derive_gene_list
+#     reproduces the trained gene order — otherwise fc1 dimensions won't match) ---
+tcga_expression_tsv: "PATH/TO/tcga_pancancer_reference_tpm.tsv"                    # <-- EDIT
+
+# --- Pre-trained ResponsePredictor (null = train from scratch on the data below) ---
+response_model_pth: null
+
+# --- Pre-training data: pan-cancer immunotherapy cohort ---
+pretrain_expression_tsv: "PATH/TO/pretrain_expression_tpm.tsv"                    # <-- EDIT
+pretrain_clinical_tsv:   "PATH/TO/pretrain_clinical.tsv"                          # <-- EDIT
+
+# --- Fine-tuning disabled for the pan-cancer model ---
+finetune_expression_tsv: null
+finetune_clinical_tsv: null
+finetune_abundance_tsv: null
+
+# --- Output ---
+output_dir: "output_pancancer"
+
+# --- Clinical Data Format ---
+sample_id_column: "ID"
+response_column: "Response"
+response_mapping:
+  R: 1
+  NR: 0
+
+# --- GAT architecture (must match pan-cancer Component 2) ---
+num_ecotypes: 10
+in_channels: 1
+hidden_channels: 8
+gat_heads_1: 4
+gat_heads_2: 1
+fc_dim: 128
+gat_dropout: 0.2
+
+# --- ResponsePredictor architecture: portable-generalization tuning (do0.6 winner) ---
+response_hidden_dims: [32, 8]
+response_dropout: 0.6
+
+# --- KNN imputation ---
+knn_neighbors: 16
+
+# --- Pre-training (pan-cancer-tuned: do0.6_ep50) ---
+pretrain_epochs: 50
+pretrain_lr: 0.001
+pretrain_batch_size: 8
+pretrain_weight_decay: 0.0001
+
+# --- Fine-tuning (unused; kept for schema completeness) ---
+finetune_epochs: 20
+finetune_lr_ecotyper: 0.0001
+finetune_lr_response: 0.00000001
+finetune_batch_size: 4
+finetune_weight_decay: 0.00000001
+
+# --- Computational ---
+random_seed: 111
+top_k_edges: 5

@@ -1,0 +1,56 @@
+# ==============================================================================
+# EcoNet Prediction — ccRCC pre-trained model
+# ==============================================================================
+# Predict immunotherapy response (R/NR) for your own bulk RNA-seq using the
+# ccRCC-specific EcoNet model. Only `expression_tsv` needs editing.
+#
+#   python run_pipeline.py --config config_ccRCC.yaml
+#
+# Paths are resolved relative to THIS file's directory.
+
+# --- Pre-trained ccRCC model bundle (shipped in the repo) ---
+graph_pkl:          "../pretrained_models/ccRCC/global_graph.pkl"
+ecotype_model_pth:  "../pretrained_models/ccRCC/ecotype_model.pth"
+response_model_pth: "../pretrained_models/ccRCC/response_model.pth"
+
+# TCGA-KIRC reference for KNN imputation of any genes missing from your data
+# (trimmed to the model's genes; gzip is read transparently).
+tcga_expression_tsv: "../pretrained_models/ccRCC/tcga_reference.tsv.gz"
+
+# --- YOUR data ---
+# Bulk expression, raw TPM, genes as rows x samples as columns, tab-separated.
+# The pipeline z-score normalizes and imputes automatically.
+expression_tsv: "PATH/TO/your_expression_tpm.tsv"      # <-- EDIT THIS
+
+# Optional: clinical table to also compute metrics + ROC. null = predict only.
+clinical_tsv: null
+
+# --- Output ---
+output_dir: "output_ccRCC"
+
+# --- Clinical format (only used if clinical_tsv is provided) ---
+sample_id_column: "RNA_ID"
+response_column: "Best.response.on.ICB"
+response_mapping:
+  CR: 1
+  PR: 1
+  SD: 0
+  PD: 0
+
+# --- Model architecture (must match the ccRCC bundle — do not change) ---
+num_ecotypes: 11              # ccRCC model: E1-E11
+in_channels: 1
+hidden_channels: 8
+gat_heads_1: 4
+gat_heads_2: 1
+fc_dim: 128
+gat_dropout: 0.2
+response_hidden_dims: [32, 16]
+response_dropout: 0.1
+
+# --- KNN imputation ---
+knn_neighbors: 16
+
+# --- Computational ---
+random_seed: 123
+batch_size: 100
