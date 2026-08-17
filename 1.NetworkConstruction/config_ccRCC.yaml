@@ -1,5 +1,5 @@
 # ==============================================================================
-# EcoNet Network Construction: ccRCC example (CCRCC EcoTyper model, E1-E11)
+# EcoNet Network Construction: ccRCC example (CCRCC EcoTyper model, RE1-RE11)
 # ==============================================================================
 # Build an intercellular regulatory network from YOUR scRNA-seq + an EcoTyper
 # model + the NicheNet database. Edit the input paths, then run:

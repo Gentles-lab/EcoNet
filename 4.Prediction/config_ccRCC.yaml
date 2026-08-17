@@ -38,7 +38,7 @@ response_mapping:
   PD: 0
 
 # --- Model architecture (must match the ccRCC bundle, do not change) ---
-num_ecotypes: 11              # ccRCC model: E1-E11
+num_ecotypes: 11              # ccRCC model: RE1-RE11
 in_channels: 1
 hidden_channels: 8
 gat_heads_1: 4

@@ -39,13 +39,14 @@ conda activate econet
 
 Everything needed ships in this repo under `pretrained_models/`, with no
 external downloads. Your only input is a bulk expression matrix (raw **TPM**,
-genes as rows and samples as columns, tab-separated).
+genes as rows and samples as columns, tab-separated). The pipeline z-score
+normalizes per gene automatically.
 
 ```bash
 cd 4.Prediction
 
 # Edit expression_tsv in the config to point at your matrix, then:
-python run_pipeline.py --config config_ccRCC.yaml        # ccRCC model (E1-E11)
+python run_pipeline.py --config config_ccRCC.yaml        # ccRCC model (RE1-RE11)
 # or
 python run_pipeline.py --config config_pancancer.yaml    # pan-cancer model (CE1-CE10)
 ```
@@ -54,7 +55,7 @@ Outputs (in `output_*/`):
 
 | File | Description |
 |------|-------------|
-| `response_predictions.csv` | Per-sample responder / non-responder class and probabilities |
+| `response_predictions.csv` | Per-sample class and probabilities (CR/PR = responder/1, SD/PD = non-responder/0) |
 | `ecotype_predictions.txt` | Predicted ecotype abundances per sample |
 | `metrics.txt`, `roc_curve.png` | Only if you also provide a clinical table for evaluation |
 
@@ -63,7 +64,7 @@ reference bundled with each model. Two models are provided:
 
 | Model | Ecotypes | Response predictor | Bundle |
 |-------|----------|--------------------|--------|
-| ccRCC | E1-E11 | fine-tuned, `[32,16]` | `pretrained_models/ccRCC/` |
+| ccRCC | RE1-RE11 | fine-tuned, `[32,16]` | `pretrained_models/ccRCC/` |
 | pan-cancer | CE1-CE10 | portable, `[32,8]` do0.6 (LODO AUC ~0.72) | `pretrained_models/pancancer/` |
 
 See each bundle's `README.md` for file details.
@@ -109,13 +110,6 @@ EcoNet/
 ├── 4.Prediction/               # models + new cohort -> R/NR
 └── environment.yml
 ```
-
-## Data conventions
-
-- Bulk expression is raw **TPM** (genes x samples, TSV); the pipeline z-score
-  normalizes per gene automatically.
-- Response labels: CR/PR map to 1 (responder), SD/PD map to 0 (non-responder).
-- Ecotypes: E1-E11 (ccRCC model) or CE1-CE10 (Carcinoma model).
 
 ## Maintainer
 

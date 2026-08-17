@@ -23,7 +23,7 @@ abundance_tsv: "PATH/TO/ecotype_abundance.txt"                        # <-- EDIT
 output_dir: "output"
 
 # --- GAT Architecture ---
-num_ecotypes: 11              # ccRCC model: 11 (E1-E11). Carcinoma model: 10 (CE1-CE10)
+num_ecotypes: 11              # ccRCC model: 11 (RE1-RE11). Carcinoma model: 10 (CE1-CE10)
 in_channels: 1
 hidden_channels: 8
 gat_heads_1: 4
