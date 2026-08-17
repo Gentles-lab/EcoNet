@@ -1,5 +1,5 @@
 # ==============================================================================
-# EcoNet Prediction — pan-cancer pre-trained model
+# EcoNet Prediction: pan-cancer pre-trained model
 # ==============================================================================
 # Predict immunotherapy response (R/NR) for your own bulk RNA-seq using the
 # 14-cancer pan-cancer EcoNet model. Only `expression_tsv` needs editing.
@@ -37,7 +37,7 @@ response_mapping:
   SD: 0
   PD: 0
 
-# --- Model architecture (must match the pan-cancer bundle — do not change) ---
+# --- Model architecture (must match the pan-cancer bundle, do not change) ---
 # Ecotypes are CE1-CE10; output columns are labeled E1-E10 by the pipeline.
 num_ecotypes: 10              # Carcinoma model: CE1-CE10
 in_channels: 1

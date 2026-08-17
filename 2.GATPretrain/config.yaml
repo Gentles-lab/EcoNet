@@ -1,5 +1,5 @@
 # ==============================================================================
-# EcoNet GAT Pretraining — Configuration
+# EcoNet GAT Pretraining: Configuration
 # ==============================================================================
 # Train a GAT to predict ecotype abundance from bulk expression over the
 # network from Component 1. Edit paths, then run:

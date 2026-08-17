@@ -1,5 +1,5 @@
 # ==============================================================================
-# EcoNet Network Construction — pan-cancer example (Carcinoma model, CE1–CE10)
+# EcoNet Network Construction: pan-cancer example (Carcinoma model, CE1-CE10)
 # ==============================================================================
 # Same pipeline as config_ccRCC.yaml but using the general Carcinoma EcoTyper
 # model (10 ecotypes). Run one config per cancer type; the resulting per-cancer
@@ -13,7 +13,7 @@
 scrna_h5ad: "PATH/TO/your_cancer_scRNA.h5ad"                # <-- EDIT
 nichenet_dir: "PATH/TO/NicheNet_DB"                         # <-- EDIT (see README)
 
-# --- EcoTyper Model: general Carcinoma model (10 ecotypes, CE1–CE10) ---
+# --- EcoTyper Model: general Carcinoma model (10 ecotypes, CE1-CE10) ---
 ecotyper_dir: "PATH/TO/EcotyperModels/Carcinoma"           # <-- EDIT
 ecotype_abundance: "PATH/TO/ecotype_abundance.txt"         # <-- EDIT
 

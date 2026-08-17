@@ -1,5 +1,5 @@
 # ==============================================================================
-# EcoNet Prediction — ccRCC pre-trained model
+# EcoNet Prediction: ccRCC pre-trained model
 # ==============================================================================
 # Predict immunotherapy response (R/NR) for your own bulk RNA-seq using the
 # ccRCC-specific EcoNet model. Only `expression_tsv` needs editing.
@@ -37,7 +37,7 @@ response_mapping:
   SD: 0
   PD: 0
 
-# --- Model architecture (must match the ccRCC bundle — do not change) ---
+# --- Model architecture (must match the ccRCC bundle, do not change) ---
 num_ecotypes: 11              # ccRCC model: E1-E11
 in_channels: 1
 hidden_channels: 8

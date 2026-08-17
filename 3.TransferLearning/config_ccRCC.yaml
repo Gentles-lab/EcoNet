@@ -1,5 +1,5 @@
 # ==============================================================================
-# EcoNet Transfer Learning & Response Prediction — ccRCC
+# EcoNet Transfer Learning & Response Prediction: ccRCC
 # ==============================================================================
 # Train a response predictor on immunotherapy data, then (optionally) fine-tune
 # on a cancer-specific cohort. Edit paths, then run:

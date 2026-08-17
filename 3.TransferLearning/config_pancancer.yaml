@@ -1,5 +1,5 @@
 # ==============================================================================
-# EcoNet Transfer Learning & Response Prediction — pan-cancer
+# EcoNet Transfer Learning & Response Prediction: pan-cancer
 # ==============================================================================
 # Train a portable pan-cancer response predictor on the pretrained pan-cancer
 # GAT. Fine-tuning is disabled (the pretrained ResponsePredictor is the
@@ -14,7 +14,7 @@ graph_pkl:     "../1.NetworkConstruction/output_PanCancer/pan_cancer_network.pkl
 gat_model_pth: "../2.GATPretrain/output/NN11GraphModel.pth"                        # <-- EDIT
 
 # --- TCGA reference (must match the GAT's training matrix so derive_gene_list
-#     reproduces the trained gene order — otherwise fc1 dimensions won't match) ---
+#     reproduces the trained gene order, otherwise fc1 dimensions won't match) ---
 tcga_expression_tsv: "PATH/TO/tcga_pancancer_reference_tpm.tsv"                    # <-- EDIT
 
 # --- Pre-trained ResponsePredictor (null = train from scratch on the data below) ---
