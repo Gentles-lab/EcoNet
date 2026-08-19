@@ -49,7 +49,7 @@ class Config:
                 return None
             return p if os.path.isabs(p) else os.path.join(base, p)
 
-        # Inputs from Components 1-2
+        # Inputs from Steps 1-2
         self.graph_pkl = resolve(d["graph_pkl"])
         self.gat_model_pth = resolve(d["gat_model_pth"])
 
@@ -76,7 +76,7 @@ class Config:
         self.response_column = d.get("response_column", "Response")
         self.response_mapping = d.get("response_mapping", {"R": 1, "NR": 0})
 
-        # GAT architecture (must match Component 2)
+        # GAT architecture (must match Step 2)
         self.num_ecotypes = d["num_ecotypes"]
         self.in_channels = d.get("in_channels", 1)
         self.hidden_channels = d.get("hidden_channels", 8)
@@ -183,7 +183,7 @@ class Config:
 # =============================================================================
 
 class EcotypeClassifier(nn.Module):
-    """GAT model for ecotype abundance prediction (same architecture as Component 2)."""
+    """GAT model for ecotype abundance prediction (same architecture as Step 2)."""
     def __init__(self, in_channels, hidden_channels, out_channels, num_nodes,
                  heads_1=4, heads_2=1, fc_dim=128, dropout=0.2):
         super(EcotypeClassifier, self).__init__()

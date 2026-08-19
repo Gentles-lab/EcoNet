@@ -3,7 +3,7 @@
 EcoNet Prediction Pipeline
 ============================
 Predict immunotherapy response for a new dataset using trained models
-from Components 1-3.
+from Steps 1-3.
 
 Usage:
     python run_pipeline.py --config config.yaml
@@ -46,7 +46,7 @@ class Config:
                 return None
             return p if os.path.isabs(p) else os.path.join(base, p)
 
-        # Models from Components 1-3
+        # Models from Steps 1-3
         self.graph_pkl = resolve(d["graph_pkl"])
         self.ecotype_model_pth = resolve(d["ecotype_model_pth"])
         self.response_model_pth = resolve(d["response_model_pth"])
@@ -117,7 +117,7 @@ class Config:
 
 
 # =============================================================================
-# Models (must match Components 2-3)
+# Models (must match Steps 2-3)
 # =============================================================================
 
 class EcotypeClassifier(nn.Module):
