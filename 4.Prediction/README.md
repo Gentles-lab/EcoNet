@@ -1,6 +1,6 @@
 # EcoNet: Prediction
 
-Predict immunotherapy response for a new dataset using trained models from Components 1-3. Optionally evaluate against known clinical outcomes.
+Predict immunotherapy response for a new dataset using trained models from Steps 1-3. Optionally evaluate against known clinical outcomes.
 
 ## Quick Start
 
@@ -13,7 +13,7 @@ python run_pipeline.py --config config.yaml
 ## Pipeline
 
 ```
-Trained models (Components 1-3) + new expression data
+Trained models (Steps 1-3) + new expression data
        |
   [Preprocessing] Z-score normalization + KNN imputation (TCGA reference)
        |
@@ -34,13 +34,13 @@ conda activate env_econet
 
 ## Input Data
 
-### Trained Models (from Components 1-3)
+### Trained Models (from Steps 1-3)
 
 | File | Source | Description |
 |------|--------|-------------|
-| `global_graph.pkl` | Component 1 | Regulatory network |
-| `finetuned_ecotype_model.pth` | Component 3 | Fine-tuned GAT |
-| `finetuned_response_model.pth` | Component 3 | Fine-tuned ResponsePredictor |
+| `global_graph.pkl` | Step 1 | Regulatory network |
+| `finetuned_ecotype_model.pth` | Step 3 | Fine-tuned GAT |
+| `finetuned_response_model.pth` | Step 3 | Fine-tuned ResponsePredictor |
 
 ### TCGA Reference
 

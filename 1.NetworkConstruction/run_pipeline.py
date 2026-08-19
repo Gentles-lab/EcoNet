@@ -100,7 +100,14 @@ class Config:
         gene_info.txt files (auto-detecting the optimal NMF rank directory).
         """
         # Auto-discover: find the directory containing Cell_States/ and Ecotypes/
+        self.ecotyper_dir = ecotyper_dir
         self._frac_dir = self._find_model_root(ecotyper_dir)
+        if self._frac_dir is None:
+            # EcoTyper model not found; defer to validate() for a clean error
+            # instead of crashing here during Config construction.
+            self._ecotypes_df = None
+            self.ecotypes = []
+            return
 
         # Read ecotypes.txt to get ecotype -> cell state mappings
         ecotypes_file = os.path.join(
@@ -127,6 +134,8 @@ class Config:
         Checks ecotyper_dir itself first, then any immediate subdirectory
         (e.g. Carcinoma_Fractions/).
         """
+        if not os.path.isdir(ecotyper_dir):
+            return None
         for candidate in [ecotyper_dir]:
             if (os.path.isdir(os.path.join(candidate, "Cell_States")) and
                     os.path.isdir(os.path.join(candidate, "Ecotypes"))):
@@ -138,9 +147,7 @@ class Config:
                     os.path.isdir(os.path.join(candidate, "Cell_States")) and
                     os.path.isdir(os.path.join(candidate, "Ecotypes"))):
                 return candidate
-        raise FileNotFoundError(
-            f"Cannot find Cell_States/ and Ecotypes/ in {ecotyper_dir} "
-            f"or its subdirectories.")
+        return None
 
     def extract_marker_genes(self):
         """Extract marker genes from EcoTyper Cell_States into output dir.
@@ -214,6 +221,10 @@ class Config:
     def validate(self, steps):
         """Check that required input files exist for the requested steps."""
         errors = []
+        if getattr(self, "_frac_dir", None) is None:
+            errors.append(
+                f"EcoTyper model not found: could not locate Cell_States/ and "
+                f"Ecotypes/ in {self.ecotyper_dir} or its subdirectories")
         if 1 in steps:
             if not os.path.exists(self.scrna_h5ad):
                 errors.append(f"scRNA h5ad not found: {self.scrna_h5ad}")
@@ -467,7 +478,7 @@ class LigandActivityPredictor:
             if len(np.unique(rv)) > 1 and len(np.unique(pv)) > 1:
                 m["auroc"] = roc_auc_score(rv, pv)
                 pr, rc, _ = precision_recall_curve(rv, pv)
-                m["aupr"] = np.trapz(rc, pr)
+                m["aupr"] = (np.trapezoid if hasattr(np, "trapezoid") else np.trapz)(rc, pr)
                 m["aupr_corrected"] = m["aupr"] - np.mean(rv)
                 m["pearson"] = np.corrcoef(rv, pv)[0, 1]
                 m["spearman"] = pd.Series(rv).corr(pd.Series(pv), method='spearman')

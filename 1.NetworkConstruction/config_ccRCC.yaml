@@ -1,63 +1,32 @@
-# ==============================================================================
-# EcoNet Network Construction: ccRCC example (CCRCC EcoTyper model, RE1-RE11)
-# ==============================================================================
-# Build an intercellular regulatory network from YOUR scRNA-seq + an EcoTyper
-# model + the NicheNet database. Edit the input paths, then run:
-#
+# EcoNet Network Construction, ccRCC (CCRCC EcoTyper model, RE1-RE11).
+# Edit the input paths, then:
 #   python run_pipeline.py --config config_ccRCC.yaml
-#
-# Paths are resolved relative to this file's directory (or use absolute paths).
 
-# --- Input Data (YOU supply these) ---
+scrna_h5ad: "PATH/TO/your_scRNA.h5ad"          # <-- EDIT: log-normalized AnnData
+nichenet_dir: "PATH/TO/NicheNet_DB"            # <-- EDIT: NicheNet CSVs (see README)
+ecotyper_dir: "PATH/TO/EcotyperModel"          # <-- EDIT: EcoTyper output (Cell_States/ + Ecotypes/)
+ecotype_abundance: "PATH/TO/ecotype_abundance.txt"   # <-- EDIT: ecotypes x samples
 
-# scRNA-seq AnnData (.h5ad), log-normalized. Must have the .obs columns below.
-scrna_h5ad: "PATH/TO/your_scRNA.h5ad"                       # <-- EDIT
-
-# NicheNet database directory. Download the 4 CSVs (lr_network.csv,
-# weighted_lr_sig.csv, weighted_gr.csv, ligand_target_matrix.csv) from
-# https://github.com/saeyslab/nichenetr  (see README).
-nichenet_dir: "PATH/TO/NicheNet_DB"                         # <-- EDIT
-
-# --- EcoTyper Model ---
-# An EcoTyper output directory. The pipeline auto-discovers Cell_States/ and
-# Ecotypes/ directly under ecotyper_dir or inside a subfolder.
-#   ecotyper_dir/
-#     [subfolder/]
-#       Cell_States/discovery/{CellType}/{rank}/gene_info.txt
-#       Ecotypes/discovery/ecotypes.txt
-ecotyper_dir: "PATH/TO/EcotyperModel"                       # <-- EDIT
-
-# Ecotype abundance (ecotypes x samples) linking ecotypes to your h5ad samples.
-ecotype_abundance: "PATH/TO/ecotype_abundance.txt"          # <-- EDIT
-
-# --- Output ---
 output_dir: "output_ccRCC"
 
-# --- scRNA-seq Column Names ---
-cell_state_column: "CellType_State"      # .obs column: cell type + state
-sample_column: "Sample"                  # .obs column: sample / patient ID
+# .obs columns in the h5ad
+cell_state_column: "CellType_State"
+sample_column: "Sample"
 
-# --- Pipeline Parameters ---
-# Step 1: Ligand-receptor identification
-overexpr_thresh_p: 100        # Adjusted p-value threshold (>1 = keep all)
-lri_variable_both: false      # Require both ligand & receptor overexpressed?
-n_boot: 100                   # Bootstrap permutations
-hill_kh: 0.5                  # Hill equation Kh
-hill_n: 1                     # Hill equation n
-comm_thresh_prob: 0           # Min communication probability
-comm_thresh_pval: 0.05        # Max communication p-value
+# Pipeline parameters
+overexpr_thresh_p: 100
+lri_variable_both: false
+n_boot: 100
+hill_kh: 0.5
+hill_n: 1
+comm_thresh_prob: 0
+comm_thresh_pval: 0.05
+top_ligands_k: 5
+expression_threshold: 1
+top_mediators_n: 2
+n_jobs: -1
 
-# Step 2: Ligand activity prediction
-top_ligands_k: 5              # Top ligands per cell-pair
-expression_threshold: 1       # Min expression for background genes
-
-# Step 3: Network construction
-top_mediators_n: 2            # Top mediator genes per ligand in subgraph
-
-# --- Computational ---
-n_jobs: -1                    # Parallel jobs (-1 = all CPUs)
-
-# --- Noisy Gene Filter (per cell-type prefix; set to {} to disable) ---
+# Per-cell-type genes to exclude as noise (set to {} to disable)
 noisy_genes:
   CD8.T.cells: [CD4, CD80]
   CD4.T.cells: [CD8A, CD8B]

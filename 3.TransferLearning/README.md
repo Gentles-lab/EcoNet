@@ -1,6 +1,6 @@
 # EcoNet: Transfer Learning & Response Prediction
 
-Trains a response predictor on pan-cancer immunotherapy data using ecotype features from the pretrained GAT (Component 2), then optionally fine-tunes on cancer-specific data. Predicts immunotherapy response (R/NR) from gene expression.
+Trains a response predictor on pan-cancer immunotherapy data using ecotype features from the pretrained GAT (Step 2), then optionally fine-tunes on cancer-specific data. Predicts immunotherapy response (R/NR) from gene expression.
 
 ## Quick Start
 
@@ -20,7 +20,7 @@ python run_pipeline.py --config config.yaml --step 2    # fine-tune only
 ## Pipeline
 
 ```
-GAT model (Component 2) + pan-cancer expression + R/NR labels
+GAT model (Step 2) + pan-cancer expression + R/NR labels
        |
   [Preprocessing] Z-score normalization + KNN imputation (TCGA reference)
        |
@@ -65,12 +65,12 @@ Required packages (pre-installed in env_econet): `torch`, `torch_geometric`, `sc
 
 ## Input Data
 
-### From Components 1-2
+### From Steps 1-2
 
 | File | Source | Description |
 |------|--------|-------------|
-| `global_graph.pkl` | Component 1 | Regulatory network |
-| `NN11GraphModel.pth` | Component 2 | Pretrained GAT model |
+| `global_graph.pkl` | Step 1 | Regulatory network |
+| `NN11GraphModel.pth` | Step 2 | Pretrained GAT model |
 
 ### TCGA Reference
 
@@ -100,7 +100,7 @@ All expression inputs are raw TPM. The pipeline applies per-gene z-score normali
 Edit `config.yaml`:
 
 ```yaml
-# From Components 1-2
+# From Steps 1-2
 graph_pkl: "path/to/global_graph.pkl"
 gat_model_pth: "path/to/NN11GraphModel.pth"
 
@@ -126,7 +126,7 @@ response_mapping:       # flexible — supports multi-class
   R: 1
   NR: 0
 
-# Architecture must match Component 2
+# Architecture must match Step 2
 num_ecotypes: 11
 hidden_channels: 8
 ```

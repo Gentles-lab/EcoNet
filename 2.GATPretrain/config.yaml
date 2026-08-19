@@ -1,29 +1,14 @@
-# ==============================================================================
-# EcoNet GAT Pretraining: Configuration
-# ==============================================================================
-# Train a GAT to predict ecotype abundance from bulk expression over the
-# network from Component 1. Edit paths, then run:
-#
+# EcoNet GAT Pretraining. Edit the input paths, then:
 #   python run_pipeline.py --config config.yaml
-#
-# Paths are resolved relative to this file's directory (or use absolute paths).
 
-# --- Input Data ---
+graph_pkl: "../1.NetworkConstruction/output_ccRCC/global_graph.pkl"   # <-- EDIT: network from Step 1
+expression_tsv: "PATH/TO/bulk_expression_tpm.tsv"                     # <-- EDIT: raw TPM, genes x samples
+abundance_tsv: "PATH/TO/ecotype_abundance.txt"                       # <-- EDIT: training target
 
-# Regulatory network from Component 1 (global_graph.pkl or pan_cancer_network.pkl)
-graph_pkl: "../1.NetworkConstruction/output_ccRCC/global_graph.pkl"   # <-- EDIT
-
-# Bulk expression matrix (genes x samples, raw TPM, TSV; z-scored automatically)
-expression_tsv: "PATH/TO/bulk_expression_tpm.tsv"                     # <-- EDIT
-
-# Ecotype abundance (ecotypes x samples, TSV; the training target)
-abundance_tsv: "PATH/TO/ecotype_abundance.txt"                        # <-- EDIT
-
-# --- Output ---
 output_dir: "output"
 
-# --- GAT Architecture ---
-num_ecotypes: 11              # ccRCC model: 11 (RE1-RE11). Carcinoma model: 10 (CE1-CE10)
+# num_ecotypes: 11 for ccRCC (RE1-RE11), 10 for Carcinoma (CE1-CE10)
+num_ecotypes: 11
 in_channels: 1
 hidden_channels: 8
 gat_heads_1: 4
@@ -31,12 +16,9 @@ gat_heads_2: 1
 fc_dim: 128
 dropout: 0.2
 
-# --- Training ---
 learning_rate: 0.0005
 num_epochs: 1000
 batch_size: 8
-num_folds: 5                  # K-fold cross-validation splits
+num_folds: 5
 random_seed: 123
-
-# --- Attention Analysis ---
-top_k_edges: 5                # Top-k edges per node for attention summary
+top_k_edges: 5

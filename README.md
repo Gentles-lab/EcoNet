@@ -8,7 +8,7 @@ prediction.
 
 ![EcoNet pipeline](pipeline.png)
 
-The pipeline has four components:
+The pipeline has four steps:
 
 1. **Network Construction**: build an intercellular regulatory network from
    scRNA-seq, an EcoTyper model, and the NicheNet database.
@@ -21,9 +21,9 @@ The pipeline has four components:
 There are two ways to use EcoNet:
 
 - **A. Predict with a provided model.** Bring only your bulk RNA-seq and use the
-  shipped ccRCC or pan-cancer model (Component 4 only).
+  shipped ccRCC or pan-cancer model (Step 4 only).
 - **B. Build your own.** Train a network and model from your own scRNA-seq and
-  cohorts (Components 1 to 4).
+  cohorts (Steps 1 to 4).
 
 ## Installation
 
@@ -71,7 +71,7 @@ See each bundle's `README.md` for file details.
 
 ## B. Build your own network and model
 
-Run the four components in order. Each is driven by a `config.yaml` (paths
+Run the four steps in order. Each is driven by a `config.yaml` (paths
 resolve relative to the config file) and caches intermediate results, so
 re-running skips completed steps.
 
@@ -95,7 +95,7 @@ cd ../4.Prediction
 python run_pipeline.py --config config.yaml
 ```
 
-Each component's `README.md` documents its required inputs and output files.
+Each step's `README.md` documents its required inputs and output files.
 
 ## Repository structure
 
