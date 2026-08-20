@@ -97,12 +97,6 @@ hidden_channels: 8
 | `output/metrics.txt` | Evaluation metrics (only if clinical data provided) |
 | `output/roc_curve.png` | ROC curve (only if clinical data provided, binary classification) |
 
-## Modes
-
-| Clinical data provided | Behavior |
-|----------------------|----------|
-| No | Prediction only -- outputs ecotype + response predictions |
-| Yes | Prediction + evaluation -- outputs predictions, metrics, ROC curve |
 
 ## Quick test
 

@@ -107,36 +107,6 @@ All parameters have sensible defaults documented in the YAML.
 | `output/node_topk_sum_attn.txt` | Sum of top-k edge attentions per gene |
 | `output/node_topk_ave_attn.txt` | Average of top-k edge attentions per gene |
 
-## Applying to a New Dataset
-
-1. Run [1.TME_representation](../1.TME_representation/) to build `global_graph.pkl`.
-2. Prepare z-score normalized bulk expression (genes x samples, TSV).
-3. Run [EcoTyper](https://github.com/digitalcytometry/ecotyper) to get ecotype abundance.
-4. Edit `config.yaml`:
-   - Set `num_ecotypes` to match your EcoTyper model (e.g., 11 for CCRCC, 10 for Carcinoma)
-   - Adjust architecture / training parameters as needed
-5. Run: `python run_pipeline.py --config config.yaml`
-
-## Method
-
-- **Step 1 (Cross-validation)**: The GAT model is evaluated using K-fold cross-validation. Each fold trains a separate model and reports classification (argmax ecotype) and regression (abundance distribution) metrics. Attention weight correlation between folds measures stability.
-
-- **Step 2 (Final training)**: A single model is trained on all samples. The trained weights (`NN11GraphModel.pth`) and the filtered gene list (`gene_selected.txt`) are saved for downstream transfer learning. Edge and node attention scores are extracted from the final epoch for interpretability analysis.
-
-### Model Architecture
-
-The GAT takes per-sample gene expression as node features over the regulatory network graph:
-
-```
-Input: (samples, genes, 1)
-  -> GATConv(heads=4, hidden=8) -> ELU + Dropout
-  -> GATConv(heads=1, hidden=8)
-  -> Flatten -> FC(128) -> ReLU + Dropout -> FC(num_ecotypes)
-Loss: KL-Divergence on softmax output vs. ecotype abundance distribution
-```
-
-All architecture parameters are configurable via `config.yaml`.
-
 ## Quick test
 
 `config_test.yaml` runs a reduced smoke test (few epochs/folds on a small matrix). Download the test data from [Zenodo](https://doi.org/10.5281/zenodo.22034558) and set the `PATH/TO/test_data` paths to your test inputs, then:

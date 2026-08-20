@@ -152,19 +152,9 @@ The number of output classes is derived automatically from `response_mapping`. C
 | `output/edge_attn.txt` | Edge attention scores (post fine-tuning) |
 | `output/node_topk_sum_attn.txt` | Node top-k sum attention |
 
-## Method
-
-- **Preprocessing**: Each expression dataset is z-score normalized per gene across samples, aligned to the model's gene list (derived from the graph-expression intersection), and missing genes are filled via KNN imputation (k=16) using TCGA as reference.
-
-- **Step 1 (Pre-training)**: If a pre-trained response model is provided, it is used directly. Otherwise, the pretrained GAT (frozen) maps each sample's expression to 11-dimensional ecotype features via softmax. A ResponsePredictor MLP (11 -> 32 -> 16 -> N classes) is trained on these features to classify immunotherapy response using cross-entropy loss with class weights computed from data proportions.
-
-- **Step 2 (Fine-tuning)**: Two modes depending on available data:
-  - **Response only**: GAT is frozen; only the ResponsePredictor is updated using cancer-specific R/NR labels.
-  - **Iterative**: Each epoch alternates (1) updating the GAT on ecotype abundance loss (KL-divergence), then (2) updating the ResponsePredictor on response loss (cross-entropy). This adapts both the ecotype representation and response prediction to the target cancer type.
-
 ## Reproducibility Note
 
-Neural network training results may vary slightly across different hardware (CPU vs GPU, different CUDA versions). The provided pre-trained model weights produce consistent inference results on any platform. If retraining from scratch, exact metrics may differ but should be comparable.
+Neural network training results may vary slightly across different hardware (CPU vs GPU, different CUDA versions). The provided pre-trained model weights produce consistent inference results on any platform. If retraining from scratch, exact metrics may differ.
 
 ## Quick test
 

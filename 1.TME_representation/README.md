@@ -127,26 +127,6 @@ All pipeline parameters (thresholds, Hill equation, bootstrap, noisy gene filter
 | `output/{ecotype}_graph.pkl` | Per-ecotype merged graph |
 | **`output/global_graph.pkl`** | **Final network (input for GAT model)** |
 
-## Applying to a New Dataset
-
-1. Run [EcoTyper](https://github.com/digitalcytometry/ecotyper) on your data.
-2. Place your h5ad and EcoTyper output directory under `data/`.
-3. Copy NicheNet DB files into `NicheNet_DB/`.
-4. Edit `config.yaml`:
-   - Set `ecotyper_dir` to your EcoTyper output
-   - Set `recovery_dataset` to the recovery run matching your scRNA-seq samples
-   - Set column names to match your h5ad
-   - Adjust `noisy_genes` for your cell types (or set to `{}`)
-5. Run: `python run_pipeline.py --config config.yaml`
-
-## Method
-
-- **Step 1**: Wilcoxon rank-sum tests with Bonferroni correction identify overexpressed genes per cell state. Ligand-receptor pairs are filtered from the NicheNet database. Communication probabilities are computed via Hill equation with bootstrap permutation testing.
-
-- **Step 2**: For each ecotype, the highest-abundance sample is selected. Ligand activity is scored per sender-receiver pair using iRegulon-style AUC against NicheNet's ligand-target matrix.
-
-- **Step 3**: Random walks through NicheNet's weighted signaling network find paths (ligand -> mediator -> TF), constrained to expressed genes. Top mediator genes are extracted and all ecotype subgraphs are merged into a single global network.
-
 ## Quick test
 
 `config_test.yaml` runs a reduced smoke test (subsampled scRNA, fewer bootstraps). Download the test data from [Zenodo](https://doi.org/10.5281/zenodo.22034558) and set the `PATH/TO/test_data` paths to a folder holding a small h5ad, an EcoTyper model, and the NicheNet DB, then:
