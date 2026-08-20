@@ -25,17 +25,3 @@ top_ligands_k: 5
 expression_threshold: 1
 top_mediators_n: 2
 n_jobs: -1
-
-# Per-cell-type genes to exclude as noise (set to {} to disable)
-noisy_genes:
-  CD8.T.cells: [CD4, CD80, CD40LG]
-  CD4.T.cells: [CD8A, CD8B, CD80]
-  Monocytes.and.Macrophages: [CD4, CD8A, CD8B, IL2RA, CD28]
-  Epithelial.cells: [CD4, CD8A, CD8B, CD81, LCK, IL7R, PTPRC, CD28]
-  Endothelial.cells: [CD4, CD8A, CD8B, PTPRC]
-  Fibroblasts: [PTPRC]
-  B.cells: [CD40LG]
-  Mast.cells: [CD22]
-  Dendritic.cells: [CD4, CD8A, CD8B, CD2, CD226, CD3D, CD3E, CD28, CD40, IL2RG, TGFBR2, CD40LG, CD7]
-  NK.cells: [CD4, CD8A, CD8B, CD3E, CD3G, CD40, HLA-DPA1, CD79B]
-  PCs: [CD4, CD8A, CD8B, CD2, CD244, CD28]

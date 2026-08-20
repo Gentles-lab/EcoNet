@@ -103,3 +103,11 @@ hidden_channels: 8
 |----------------------|----------|
 | No | Prediction only -- outputs ecotype + response predictions |
 | Yes | Prediction + evaluation -- outputs predictions, metrics, ROC curve |
+
+## Quick test
+
+`config_test.yaml` (ccRCC) and `config_pancancer_test.yaml` run prediction on a small test input. Download the test data from [Zenodo](https://doi.org/10.5281/zenodo.22034558) and set the `PATH/TO/test_data` path to your test inputs, then:
+
+```bash
+python run_pipeline.py --config config_test.yaml
+```

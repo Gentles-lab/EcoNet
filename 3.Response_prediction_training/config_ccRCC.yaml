@@ -1,8 +1,8 @@
 # EcoNet Transfer Learning, ccRCC. Edit paths, then:
 #   python run_pipeline.py --config config_ccRCC.yaml
 
-graph_pkl:     "../1.NetworkConstruction/output_ccRCC/global_graph.pkl"   # <-- EDIT: from Step 1
-gat_model_pth: "../2.GATPretrain/output/NN11GraphModel.pth"              # <-- EDIT: from Step 2
+graph_pkl:     "../1.TME_representation/output_ccRCC/global_graph.pkl"   # <-- EDIT: from Step 1
+gat_model_pth: "../2.Graph_representation_training/output/NN11GraphModel.pth"              # <-- EDIT: from Step 2
 tcga_expression_tsv: "PATH/TO/tcga_reference_tpm.tsv"                    # <-- EDIT: KNN imputation reference
 
 response_model_pth: null    # null = train from scratch on the data below

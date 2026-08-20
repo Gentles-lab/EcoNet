@@ -1,7 +1,7 @@
 # EcoNet GAT Pretraining. Edit the input paths, then:
 #   python run_pipeline.py --config config.yaml
 
-graph_pkl: "../1.NetworkConstruction/output_ccRCC/global_graph.pkl"   # <-- EDIT: network from Step 1
+graph_pkl: "../1.TME_representation/output_ccRCC/global_graph.pkl"   # <-- EDIT: network from Step 1
 expression_tsv: "PATH/TO/bulk_expression_tpm.tsv"                     # <-- EDIT: raw TPM, genes x samples
 abundance_tsv: "PATH/TO/ecotype_abundance.txt"                       # <-- EDIT: training target
 

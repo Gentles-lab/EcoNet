@@ -1,4 +1,4 @@
-# EcoNet: Transfer Learning & Response Prediction
+# EcoNet: Response Prediction Training
 
 Trains a response predictor on pan-cancer immunotherapy data using ecotype features from the pretrained GAT (Step 2), then optionally fine-tunes on cancer-specific data. Predicts immunotherapy response (R/NR) from gene expression.
 
@@ -165,3 +165,11 @@ The number of output classes is derived automatically from `response_mapping`. C
 ## Reproducibility Note
 
 Neural network training results may vary slightly across different hardware (CPU vs GPU, different CUDA versions). The provided pre-trained model weights produce consistent inference results on any platform. If retraining from scratch, exact metrics may differ but should be comparable.
+
+## Quick test
+
+`config_test.yaml` runs a reduced smoke test (pre-training only; fine-tuning skipped). Download the test data from [Zenodo](https://doi.org/10.5281/zenodo.22034558) and set the `PATH/TO/test_data` paths to your test inputs, then:
+
+```bash
+python run_pipeline.py --config config_test.yaml
+```

@@ -1,4 +1,4 @@
-# EcoNet: GAT Pretraining
+# EcoNet: Graph Representation Training
 
 Trains a Graph Attention Network on the intercellular regulatory network (from Step 1) to predict ecotype abundance from bulk gene expression. The output `NN11GraphModel.pth` is the pretrained model used as input for transfer learning / response prediction.
 
@@ -45,7 +45,7 @@ Required packages (pre-installed in env_econet): `torch`, `torch_geometric`, `sc
 
 ### 1. Regulatory Network (`global_graph.pkl`)
 
-Output from [1.NetworkConstruction](../1.NetworkConstruction/). A NetworkX DiGraph encoding gene-gene regulatory relationships across ecotypes.
+Output from [1.TME_representation](../1.TME_representation/). A NetworkX DiGraph encoding gene-gene regulatory relationships across ecotypes.
 
 ### 2. Bulk Expression Matrix (TSV)
 
@@ -109,7 +109,7 @@ All parameters have sensible defaults documented in the YAML.
 
 ## Applying to a New Dataset
 
-1. Run [1.NetworkConstruction](../1.NetworkConstruction/) to build `global_graph.pkl`.
+1. Run [1.TME_representation](../1.TME_representation/) to build `global_graph.pkl`.
 2. Prepare z-score normalized bulk expression (genes x samples, TSV).
 3. Run [EcoTyper](https://github.com/digitalcytometry/ecotyper) to get ecotype abundance.
 4. Edit `config.yaml`:
@@ -136,3 +136,11 @@ Loss: KL-Divergence on softmax output vs. ecotype abundance distribution
 ```
 
 All architecture parameters are configurable via `config.yaml`.
+
+## Quick test
+
+`config_test.yaml` runs a reduced smoke test (few epochs/folds on a small matrix). Download the test data from [Zenodo](https://doi.org/10.5281/zenodo.22034558) and set the `PATH/TO/test_data` paths to your test inputs, then:
+
+```bash
+python run_pipeline.py --config config_test.yaml
+```

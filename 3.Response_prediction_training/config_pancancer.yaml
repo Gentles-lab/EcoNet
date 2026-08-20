@@ -1,8 +1,8 @@
 # EcoNet Transfer Learning, pan-cancer (fine-tuning disabled). Edit paths, then:
 #   python run_pipeline.py --config config_pancancer.yaml
 
-graph_pkl:     "../1.NetworkConstruction/output_PanCancer/pan_cancer_network.pkl"  # <-- EDIT: from Step 1
-gat_model_pth: "../2.GATPretrain/output/NN11GraphModel.pth"                        # <-- EDIT: from Step 2
+graph_pkl:     "../1.TME_representation/output_PanCancer/pan_cancer_network.pkl"  # <-- EDIT: from Step 1
+gat_model_pth: "../2.Graph_representation_training/output/NN11GraphModel.pth"                        # <-- EDIT: from Step 2
 # TCGA reference must match the GAT's training matrix, or fc1 dimensions won't match
 tcga_expression_tsv: "PATH/TO/tcga_pancancer_reference_tpm.tsv"                    # <-- EDIT
 

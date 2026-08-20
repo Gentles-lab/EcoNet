@@ -1,0 +1,32 @@
+# EcoNet Prediction, pan-cancer model, on the bundled test input. Run:
+#   python run_pipeline.py --config config_pancancer_test.yaml
+
+graph_pkl:          "../pretrained_models/pancancer/pan_cancer_network.pkl"
+ecotype_model_pth:  "../pretrained_models/pancancer/ecotype_model.pth"
+response_model_pth: "../pretrained_models/pancancer/response_model.pth"
+tcga_expression_tsv: "../pretrained_models/pancancer/tcga_reference.tsv.gz"   # KNN imputation reference
+
+expression_tsv: "../../test_data/pancancer_input_tpm.tsv"   # synthetic test input (6 samples)
+clinical_tsv: null                                          # predict only
+
+output_dir: "output_pancancer_test"
+
+# Clinical columns (used only if clinical_tsv is set)
+sample_id_column: "RNA_ID"
+response_column: "Best.response.on.ICB"
+response_mapping: {CR: 1, PR: 1, SD: 0, PD: 0}
+
+# Architecture: must match the pan-cancer bundle (ecotypes CE1-CE10, output labeled E1-E10)
+num_ecotypes: 10
+in_channels: 1
+hidden_channels: 8
+gat_heads_1: 4
+gat_heads_2: 1
+fc_dim: 128
+gat_dropout: 0.2
+response_hidden_dims: [32, 8]
+response_dropout: 0.6
+
+knn_neighbors: 16
+random_seed: 123
+batch_size: 100

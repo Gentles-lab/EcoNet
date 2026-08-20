@@ -1,0 +1,48 @@
+# EcoNet Transfer Learning, quick test on the bundled test data (ccRCC network +
+# pretrained GAT + 150 Brooks samples). Fine-tuning skipped, epochs reduced. Run:
+#   python run_pipeline.py --config config_test.yaml
+
+graph_pkl:     "../pretrained_models/ccRCC/global_graph.pkl"
+gat_model_pth: "PATH/TO/test_data/step3_gat_model.pth"
+tcga_expression_tsv: "../pretrained_models/ccRCC/tcga_reference.tsv.gz"   # KNN imputation reference
+
+response_model_pth: null   # train from scratch on the data below
+
+pretrain_expression_tsv: "PATH/TO/test_data/step3_pretrain_expression.tsv"
+pretrain_clinical_tsv:   "PATH/TO/test_data/step3_pretrain_clinical.tsv"
+
+# Fine-tuning skipped for this test
+finetune_expression_tsv: null
+finetune_clinical_tsv: null
+finetune_abundance_tsv: null
+
+output_dir: "output_test"
+
+sample_id_column: "ID"
+response_column: "Response"
+response_mapping: {R: 1, NR: 0}
+
+num_ecotypes: 11
+in_channels: 1
+hidden_channels: 8
+gat_heads_1: 4
+gat_heads_2: 1
+fc_dim: 128
+gat_dropout: 0.2
+response_hidden_dims: [32, 16]
+response_dropout: 0.1
+knn_neighbors: 16
+
+pretrain_epochs: 50        # reduced for a quick test (production: 200)
+pretrain_lr: 0.005
+pretrain_batch_size: 16
+pretrain_weight_decay: 0.001
+
+finetune_epochs: 20
+finetune_lr_ecotyper: 0.0001
+finetune_lr_response: 0.00000001
+finetune_batch_size: 4
+finetune_weight_decay: 0.00000001
+
+random_seed: 111
+top_k_edges: 5

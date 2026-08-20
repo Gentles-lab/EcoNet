@@ -427,35 +427,7 @@ def run_step2(cfg, X, y, edge_index, gene_selected, edges, device):
 
     edge_list_named = [(gene_selected[u], gene_selected[v]) for u, v in edges]
 
-    # Edge attention
-    edge_attn_path = os.path.join(cfg.output_dir, "edge_attn.txt")
-    edge_attn_list = [(f"{u}--{v}", a)
-                      for (u, v), a in zip(edge_list_named, mean_attn)]
-    edge_attn_list.sort(key=lambda x: x[1], reverse=True)
-    with open(edge_attn_path, "w") as f:
-        f.write("Edge\tMeanAttention\n")
-        for name, a in edge_attn_list:
-            f.write(f"{name}\t{a:.6f}\n")
-
-    # Node total attention
-    node_attn = {}
-    for (u, v), a in zip(edge_list_named, mean_attn):
-        node_attn[u] = node_attn.get(u, 0) + a
-        node_attn[v] = node_attn.get(v, 0) + a
-
-    _write_node_attn(os.path.join(cfg.output_dir, "node_sum_attn.txt"),
-                     node_attn, "TotalEdgeAttention")
-
-    # Node average attention
-    node_edge_count = {}
-    for u, v in edge_list_named:
-        node_edge_count[u] = node_edge_count.get(u, 0) + 1
-        node_edge_count[v] = node_edge_count.get(v, 0) + 1
-    node_ave = {n: node_attn[n] / node_edge_count[n] for n in node_attn}
-    _write_node_attn(os.path.join(cfg.output_dir, "node_ave_attn.txt"),
-                     node_ave, "AverageEdgeAttention")
-
-    # Node top-k sum attention
+    # Node top-k sum attention (only attention output saved)
     node_edge_attn_map = defaultdict(list)
     for (u, v), a in zip(edge_list_named, mean_attn):
         node_edge_attn_map[u].append(a)
@@ -467,15 +439,7 @@ def run_step2(cfg, X, y, edge_index, gene_selected, edges, device):
     _write_node_attn(os.path.join(cfg.output_dir, "node_topk_sum_attn.txt"),
                      node_topk_sum, f"Top{k}EdgeAttentionSum")
 
-    # Node top-k average attention
-    node_topk_ave = {}
-    for n, al in node_edge_attn_map.items():
-        top = sorted(al, reverse=True)[:k]
-        node_topk_ave[n] = sum(top) / len(top)
-    _write_node_attn(os.path.join(cfg.output_dir, "node_topk_ave_attn.txt"),
-                     node_topk_ave, f"Top{k}EdgeAttentionAve")
-
-    print(f"  Saved: attention scores -> {cfg.output_dir}/")
+    print(f"  Saved: node_topk_sum_attn.txt -> {cfg.output_dir}/")
 
 
 def _write_node_attn(path, node_dict, col_name):

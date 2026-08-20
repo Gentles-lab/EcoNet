@@ -349,15 +349,12 @@ def main():
 
     # --- Save response predictions ---
     pred_path = os.path.join(cfg.output_dir, "response_predictions.csv")
-    # Build reverse mapping for readable labels
-    label_names = {}
-    for name, val in cfg.response_mapping.items():
-        if val not in label_names:
-            label_names[val] = name
+    # Binary responder label: 1 = responder (R), 0 = non-responder (NR)
+    resp_label = {1: "R", 0: "NR"}
     pred_dict = {
         "SampleID": list(samples),
         "PredClass": pred_cls,
-        "PredLabel": [label_names.get(c, str(c)) for c in pred_cls],
+        "PredLabel": [resp_label.get(c, str(c)) for c in pred_cls],
     }
     for c in range(cfg.num_classes):
         pred_dict[f"Prob_class{c}"] = pred_probs[:, c]

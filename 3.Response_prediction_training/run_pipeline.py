@@ -719,60 +719,24 @@ def _compute_auc(y_true, pred_probs, num_classes):
 
 
 def _save_attention_scores(cfg, gene_list, edges, attn_scores):
-    """Save edge and node attention scores (sum, ave, top-k sum, top-k ave)."""
+    """Save node top-k sum attention scores."""
     print("\n  Computing attention scores...")
     mean_attn = attn_scores.mean(axis=0)
     edge_list_named = [(gene_list[u], gene_list[v]) for u, v in edges]
 
-    # Edge attention
-    edge_attn_list = [(f"{u}--{v}", a)
-                      for (u, v), a in zip(edge_list_named, mean_attn)]
-    edge_attn_list.sort(key=lambda x: x[1], reverse=True)
-    edge_path = os.path.join(cfg.output_dir, "edge_attn.txt")
-    with open(edge_path, "w") as f:
-        f.write("Edge\tMeanAttention\n")
-        for name, a in edge_attn_list:
-            f.write(f"{name}\t{a:.6f}\n")
-
-    # Node total (sum) attention
-    node_attn = {}
-    node_edge_count = {}
-    for (u, v), a in zip(edge_list_named, mean_attn):
-        node_attn[u] = node_attn.get(u, 0) + a
-        node_attn[v] = node_attn.get(v, 0) + a
-        node_edge_count[u] = node_edge_count.get(u, 0) + 1
-        node_edge_count[v] = node_edge_count.get(v, 0) + 1
-
-    _write_node_attn(os.path.join(cfg.output_dir, "node_sum_attn.txt"),
-                     node_attn, "TotalEdgeAttention")
-
-    # Node average attention
-    node_ave = {n: node_attn[n] / node_edge_count[n] for n in node_attn}
-    _write_node_attn(os.path.join(cfg.output_dir, "node_ave_attn.txt"),
-                     node_ave, "AverageEdgeAttention")
-
-    # Per-node edge-attention lists, used by the top-k summaries
+    # Node top-k sum attention (only attention output saved)
     node_edge_attn_map = defaultdict(list)
     for (u, v), a in zip(edge_list_named, mean_attn):
         node_edge_attn_map[u].append(a)
         node_edge_attn_map[v].append(a)
 
-    # Node top-k sum attention
     k = cfg.top_k_edges
     node_topk_sum = {n: sum(sorted(al, reverse=True)[:k])
                      for n, al in node_edge_attn_map.items()}
     _write_node_attn(os.path.join(cfg.output_dir, "node_topk_sum_attn.txt"),
                      node_topk_sum, f"Top{k}EdgeAttentionSum")
 
-    # Node top-k average attention
-    node_topk_ave = {}
-    for n, al in node_edge_attn_map.items():
-        top = sorted(al, reverse=True)[:k]
-        node_topk_ave[n] = sum(top) / len(top)
-    _write_node_attn(os.path.join(cfg.output_dir, "node_topk_ave_attn.txt"),
-                     node_topk_ave, f"Top{k}EdgeAttentionAve")
-
-    print(f"  Saved: attention scores -> {cfg.output_dir}/")
+    print(f"  Saved: node_topk_sum_attn.txt -> {cfg.output_dir}/")
 
 
 def _write_node_attn(path, node_dict, col_name):

@@ -1,0 +1,24 @@
+# EcoNet GAT Pretraining, quick test on the bundled test data (ccRCC network,
+# 200 TCGA-KIRC samples). Epochs/folds reduced for speed. Run:
+#   python run_pipeline.py --config config_test.yaml
+
+graph_pkl: "../pretrained_models/ccRCC/global_graph.pkl"
+expression_tsv: "PATH/TO/test_data/step2_expression.tsv"
+abundance_tsv: "PATH/TO/test_data/step2_abundance.txt"
+
+output_dir: "output_test"
+
+num_ecotypes: 11
+in_channels: 1
+hidden_channels: 8
+gat_heads_1: 4
+gat_heads_2: 1
+fc_dim: 128
+dropout: 0.2
+
+learning_rate: 0.0005
+num_epochs: 20        # reduced for a quick test (production: 1000)
+batch_size: 8
+num_folds: 2          # reduced for a quick test (production: 5)
+random_seed: 123
+top_k_edges: 5

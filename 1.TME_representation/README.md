@@ -1,4 +1,4 @@
-# EcoNet: Network Construction
+# EcoNet: TME Representation
 
 Constructs an intercellular regulatory network from scRNA-seq data and an EcoTyper model. The output `global_graph.pkl` is a directed gene network used as input for GAT model training.
 
@@ -146,3 +146,11 @@ All pipeline parameters (thresholds, Hill equation, bootstrap, noisy gene filter
 - **Step 2**: For each ecotype, the highest-abundance sample is selected. Ligand activity is scored per sender-receiver pair using iRegulon-style AUC against NicheNet's ligand-target matrix.
 
 - **Step 3**: Random walks through NicheNet's weighted signaling network find paths (ligand -> mediator -> TF), constrained to expressed genes. Top mediator genes are extracted and all ecotype subgraphs are merged into a single global network.
+
+## Quick test
+
+`config_test.yaml` runs a reduced smoke test (subsampled scRNA, fewer bootstraps). Download the test data from [Zenodo](https://doi.org/10.5281/zenodo.22034558) and set the `PATH/TO/test_data` paths to a folder holding a small h5ad, an EcoTyper model, and the NicheNet DB, then:
+
+```bash
+python run_pipeline.py --config config_test.yaml
+```

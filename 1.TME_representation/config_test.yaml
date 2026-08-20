@@ -1,0 +1,26 @@
+# EcoNet Network Construction, quick self-contained test. All inputs (subsampled
+# ccRCC scRNA of 3119 cells, EcoTyper model, NicheNet DB) are in test_data/. Run:
+#   python run_pipeline.py --config config_test.yaml
+
+scrna_h5ad: "PATH/TO/test_data/step1_scRNA.h5ad"
+nichenet_dir: "PATH/TO/test_data/NicheNet_DB"
+ecotyper_dir: "PATH/TO/test_data/EcotyperModel"
+ecotype_abundance: "PATH/TO/test_data/step1_ecotype_abundance.txt"
+
+output_dir: "output_test"
+
+cell_state_column: "CellType_State"
+sample_column: "Sample"
+
+# Pipeline parameters
+overexpr_thresh_p: 100
+lri_variable_both: false
+n_boot: 20            # reduced for a quick test (production: 100)
+hill_kh: 0.5
+hill_n: 1
+comm_thresh_prob: 0
+comm_thresh_pval: 0.05
+top_ligands_k: 5
+expression_threshold: 1
+top_mediators_n: 2
+n_jobs: -1
