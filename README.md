@@ -97,6 +97,3 @@ Small example inputs for a quick smoke test of each step are available on Zenodo
 https://doi.org/10.5281/zenodo.22034558. Download and unpack them, then point the
 `PATH/TO/test_data` paths in each step's `config_test.yaml` at that folder.
 
-## Maintainer
-
-WANG Ruohan, ruohwang@stanford.edu
