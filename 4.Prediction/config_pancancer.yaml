@@ -4,7 +4,8 @@
 graph_pkl:          "../pretrained_models/pancancer/pan_cancer_network.pkl"
 ecotype_model_pth:  "../pretrained_models/pancancer/ecotype_model.pth"
 response_model_pth: "../pretrained_models/pancancer/response_model.pth"
-tcga_expression_tsv: "../pretrained_models/pancancer/tcga_reference.tsv.gz"   # KNN imputation reference
+tcga_expression_tsv: "../pretrained_models/pancancer/tcga_reference.tsv.gz"   # KNN imputation reference (already per-cancer-Z)
+normalize_reference: false   # reference is pre-normalized (per-cancer-Z); do not re-normalize it
 
 expression_tsv: "PATH/TO/your_expression_tpm.tsv"   # <-- EDIT: raw TPM, genes x samples
 clinical_tsv: null                                  # optional: adds metrics + ROC

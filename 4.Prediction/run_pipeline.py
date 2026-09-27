@@ -83,6 +83,10 @@ class Config:
         # KNN
         self.knn_neighbors = d.get("knn_neighbors", 16)
 
+        # Whether to z-score the TCGA reference. Set false when the reference is
+        # already normalized (e.g. per-cancer-Z pan-cancer model).
+        self.normalize_reference = d.get("normalize_reference", True)
+
         # Other
         self.random_seed = d.get("random_seed", 123)
         self.batch_size = int(d.get("batch_size", 100))
@@ -94,7 +98,8 @@ class Config:
                            ("Response model", self.response_model_pth),
                            ("TCGA expression", self.tcga_expression_tsv),
                            ("Expression", self.expression_tsv)]:
-            if not os.path.exists(path):
+            # response_model_pth may be null (ecotypes-only mode)
+            if path is not None and not os.path.exists(path):
                 errors.append(f"{name} not found: {path}")
         if self.clinical_tsv and not os.path.exists(self.clinical_tsv):
             errors.append(f"Clinical not found: {self.clinical_tsv}")
@@ -264,9 +269,14 @@ def main():
     print(f"  Genes: {len(gene_list)}, Edges: {len(edges)}")
 
     # --- Prepare TCGA reference ---
-    print("  Z-score normalizing TCGA reference...")
     tcga_raw = pd.read_csv(cfg.tcga_expression_tsv, index_col=0, sep="\t")
-    tcga_normed = zscore_normalize(tcga_raw).reindex(gene_list).fillna(0).T
+    if cfg.normalize_reference:
+        print("  Z-score normalizing TCGA reference...")
+        tcga_normed = zscore_normalize(tcga_raw).reindex(gene_list).fillna(0).T
+    else:
+        # Reference is already normalized (e.g. per-cancer-Z); use as-is.
+        print("  Using pre-normalized TCGA reference (normalize_reference: false)...")
+        tcga_normed = tcga_raw.reindex(gene_list).fillna(0).T
 
     # --- Preprocess new dataset ---
     print(f"\nPreprocessing new dataset...")
@@ -309,16 +319,19 @@ def main():
         torch.load(cfg.ecotype_model_pth, map_location=device))
     ecotype_model.eval()
 
-    response_model = ResponsePredictor(
-        input_size=cfg.num_ecotypes,
-        output_size=cfg.num_classes,
-        hidden_dims=cfg.response_hidden_dims,
-        dropout=cfg.response_dropout,
-    ).to(device)
-    response_model.load_state_dict(
-        torch.load(cfg.response_model_pth, map_location=device))
-    response_model.eval()
-    print("  Models loaded.")
+    response_model = None
+    if cfg.response_model_pth is not None:
+        response_model = ResponsePredictor(
+            input_size=cfg.num_ecotypes,
+            output_size=cfg.num_classes,
+            hidden_dims=cfg.response_hidden_dims,
+            dropout=cfg.response_dropout,
+        ).to(device)
+        response_model.load_state_dict(
+            torch.load(cfg.response_model_pth, map_location=device))
+        response_model.eval()
+    print("  Models loaded." if response_model is not None
+          else "  Ecotype model loaded (ecotypes-only: no response model).")
 
     # --- Predict ---
     print(f"\nPredicting...")
@@ -330,14 +343,11 @@ def main():
             x_batch = X[i:i+cfg.batch_size].unsqueeze(2)
             logits = ecotype_model(x_batch, edge_index)
             eco_feat = F.softmax(logits, dim=1)
-            pred_log = response_model(eco_feat)
-            pred_probs = torch.exp(pred_log)
             all_eco_feats.append(eco_feat.cpu())
-            all_pred_probs.append(pred_probs.cpu())
+            if response_model is not None:
+                all_pred_probs.append(torch.exp(response_model(eco_feat)).cpu())
 
     eco_feats = torch.cat(all_eco_feats, dim=0).numpy()
-    pred_probs = torch.cat(all_pred_probs, dim=0).numpy()
-    pred_cls = pred_probs.argmax(axis=1)
 
     # --- Save ecotype predictions ---
     eco_path = os.path.join(cfg.output_dir, "ecotype_predictions.txt")
@@ -346,6 +356,16 @@ def main():
         columns=[f"E{i+1}" for i in range(cfg.num_ecotypes)])
     eco_df.T.to_csv(eco_path, sep="\t")
     print(f"  Saved: {eco_path}")
+
+    # --- Ecotypes-only mode: no response model, stop here ---
+    if response_model is None:
+        print("\n" + "=" * 60)
+        print("Pipeline complete (ecotypes only).")
+        print("=" * 60)
+        return
+
+    pred_probs = torch.cat(all_pred_probs, dim=0).numpy()
+    pred_cls = pred_probs.argmax(axis=1)
 
     # --- Save response predictions ---
     pred_path = os.path.join(cfg.output_dir, "response_predictions.csv")

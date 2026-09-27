@@ -63,6 +63,12 @@ Two models are provided:
 
 See each model's `README.md` for file details.
 
+### Predict ecotype abundances only
+
+To skip immunotherapy-response prediction and output only the ecotype
+abundances, set `response_model_pth: null` in the config. The run then writes
+just `ecotype_predictions.txt` (no response model is loaded).
+
 ## B. Build your own network and model
 
 Run the four steps in order. Each is driven by a `config.yaml` (paths
